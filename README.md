@@ -1,4 +1,4 @@
-# [NeurIPS 2026]Black-Box Uncertainty Quantification for Large Language Models via Ensemble-of-Ensembles
+# [NeurIPS 2026] [Black-Box Uncertainty Quantification for Large Language Models via Ensemble-of-Ensembles](https://neurips.cc/virtual/2026/loc/sydney/poster/151082)
 
 This is a black-box method for estimating how uncertain a large language model is about its answer to a question. It splits the uncertainty into two parts:
 
