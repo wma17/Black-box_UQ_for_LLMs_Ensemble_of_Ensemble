@@ -5,10 +5,18 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "eoe-uq"
 version = "0.1.0"
-description = "Ensemble-of-ensembles uncertainty quantification for LLM question answering"
+description = "Black-Box Uncertainty Quantification for Large Language Models via Ensemble-of-Ensembles (NeurIPS 2026)"
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
+authors = [
+    { name = "Wang Ma" },
+    { name = "Debarun Bhattacharjya" },
+    { name = "Junkyu Lee" },
+    { name = "Nhan H. Pham" },
+    { name = "Harsha Kokel" },
+    { name = "Qiang Ji" },
+]
 dependencies = [
     "torch>=2.1",
     "transformers>=4.40",

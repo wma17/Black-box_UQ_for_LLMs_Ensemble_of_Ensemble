@@ -1,4 +1,4 @@
-"""Ensemble-of-ensembles uncertainty quantification for LLM question answering."""
+"""Black-Box Uncertainty Quantification for Large Language Models via Ensemble-of-Ensembles (NeurIPS 2026)."""
 
 from .generation import HFChatGenerator
 from .paraphrase import (

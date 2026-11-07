@@ -10,7 +10,8 @@ For a question x with paraphrase pool P(x):
             e_{n,m} = embed(y_{n,m})
 
     AU = mean_n mean_d Var_m[e_{n,m,d}]
-    EU = mean_d Var_n[mean_m e_{n,m,d}]
+    EU = mean_d Var_n[mean_m e_{n,m,d}] - AU / M
+    TU = AU + EU
 """
 
 import random
