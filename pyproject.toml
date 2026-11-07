@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eoe-uq"
+version = "0.1.0"
+description = "Ensemble-of-ensembles uncertainty quantification for LLM question answering"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+dependencies = [
+    "torch>=2.1",
+    "transformers>=4.40",
+    "sentence-transformers>=2.6",
+    "numpy>=1.24",
+    "tqdm",
+    "accelerate",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.setuptools]
+packages = ["eoe_uq"]
