@@ -1,4 +1,6 @@
-# [NeurIPS 2026] [Black-Box Uncertainty Quantification for Large Language Models via Ensemble-of-Ensembles](https://neurips.cc/virtual/2026/loc/sydney/poster/151082)
+# Black-Box Uncertainty Quantification for Large Language Models via Ensemble-of-Ensembles
+
+Official implementation of the NeurIPS 2026 paper [*Black-Box Uncertainty Quantification for Large Language Models via Ensemble-of-Ensembles*](https://neurips.cc/virtual/2026/loc/sydney/poster/151082).
 
 This is a black-box method for estimating how uncertain a large language model is about its answer to a question. It splits the uncertainty into two parts:
 
@@ -16,11 +18,11 @@ For a question `x`:
    - add Gaussian noise to the question embedding: `z_n = embed(x) + ε_n`, where `ε_n ~ N(0, σ²I)`;
    - snap `z_n` to the closest real question in the pool: `x'_n = argmax_{p ∈ P(x)} cos(z_n, embed(p))`.
 3. **Inner ensemble (M samples).** For each `x'_n`, sample `M` answers `y_{n,1..M}` from the LLM and embed each one: `e_{n,m} = embed(y_{n,m})`.
-4. **Decomposition** (variances are unbiased and averaged over the embedding dimensions `d`):
+4. **Decomposition** (sample variances with `ddof=1`, averaged over the embedding dimensions `d`):
 
 ```
-AU    = mean_n  mean_d  Var_m [ e_{n,m,d} ]          # spread within a perturbation
-EU    = mean_d  Var_n [ mean_m e_{n,m,d} ]           # spread between perturbations
+AU    = mean_n  mean_d  Var_m [ e_{n,m,d} ]
+EU    = mean_d  Var_n [ mean_m e_{n,m,d} ]  −  AU / M
 Total = AU + EU
 ```
 
@@ -29,7 +31,7 @@ Separately, the model's greedy answer to the original question is generated. Thi
 ```
             ┌── x'_1 ──► y_{1,1} … y_{1,M} ──► mean_1, var_1 ─┐
  x ─► pool ─┼── x'_2 ──► y_{2,1} … y_{2,M} ──► mean_2, var_2 ─┼─► AU = avg(var_n)
-            │   …                                             │   EU = var(mean_n)
+            │   …                                             │   EU = var(mean_n) − AU/M
             └── x'_N ──► y_{N,1} … y_{N,M} ──► mean_N, var_N ─┘
 ```
 
@@ -52,7 +54,7 @@ python scripts/run_eoe.py \
     --model  Qwen/Qwen2.5-7B-Instruct
 ```
 
-- `--input` takes `.jsonl` or `.json` with a `"question"` field, or `.txt` with one question per line. Other fields in each record, such as a reference answer, are copied to the output.
+- `--input` takes `.jsonl` or `.json` with a `"question"` field, or `.txt` with one question per line. Any other fields in a record (e.g. an `id`) are copied to the output unchanged.
 - Results are written to `--output` one line at a time. If a run is interrupted, re-running the same command skips questions that are already scored.
 - The paraphrase pool is cached at `<output dir>/paraphrase_pool.json`, or at the path given by `--paraphrase-cache`, and reused on later runs.
 
@@ -61,11 +63,10 @@ Each output line looks like this:
 ```json
 {
   "question": "What happens if you crack your knuckles a lot?",
-  "reference_answer": "...",
   "answer": "Joint fluid cavitation releases a gas bubble, ...",
   "aleatoric_uncertainty": 0.0011,
-  "epistemic_uncertainty": 0.0009,
-  "total_uncertainty": 0.0020
+  "epistemic_uncertainty": 0.0007,
+  "total_uncertainty": 0.0018
 }
 ```
 
@@ -146,13 +147,13 @@ tests/              # unit tests for the decomposition (no models needed)
 
 ```bibtex
 @inproceedings{ma2026bbuq,
-  title  = {Black-Box Uncertainty Quantification for Large Language Models via Ensemble-of-Ensembles},
-  author = {Wang Ma, Debarun Bhattacharjya, Junkyu Lee, Nhan H Pham, Harsha Kokel, Qiang Ji},
-journal={Advances in Neural Information Processing Systems},
-  year   = {2026}
+  title     = {Black-Box Uncertainty Quantification for Large Language Models via Ensemble-of-Ensembles},
+  author    = {Ma, Wang and Bhattacharjya, Debarun and Lee, Junkyu and Pham, Nhan H. and Kokel, Harsha and Ji, Qiang},
+  booktitle = {Advances in Neural Information Processing Systems},
+  year      = {2026}
 }
 ```
 
 ## License
 
-MIT
+This project is released under the [MIT License](LICENSE).

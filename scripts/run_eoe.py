@@ -2,7 +2,7 @@
 """Score questions with ensemble-of-ensembles uncertainty.
 
 Input  (--input):  .jsonl / .json with a "question" field per record, or .txt with one question per line.
-                   Other fields in each record (e.g. a reference answer) are copied to the output.
+                   Any other fields in a record (e.g. an "id") are copied to the output unchanged.
 Output (--output): .jsonl, one record per question, written as it goes. Re-running with the
                    same output skips questions that are already done.
 
