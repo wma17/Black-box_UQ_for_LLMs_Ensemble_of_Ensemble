@@ -1,4 +1,4 @@
-# Ensemble-of-Ensembles Uncertainty Quantification for LLMs
+# [NeurIPS 2026]Black-Box Uncertainty Quantification for Large Language Models via Ensemble-of-Ensembles
 
 This is a black-box method for estimating how uncertain a large language model is about its answer to a question. It splits the uncertainty into two parts:
 
@@ -145,10 +145,11 @@ tests/              # unit tests for the decomposition (no models needed)
 ## Citation
 
 ```bibtex
-@inproceedings{TODO,
-  title  = {TODO},
-  author = {TODO},
-  year   = {TODO}
+@inproceedings{ma2026bbuq,
+  title  = {Black-Box Uncertainty Quantification for Large Language Models via Ensemble-of-Ensembles},
+  author = {Wang Ma, Debarun Bhattacharjya, Junkyu Lee, Nhan H Pham, Harsha Kokel, Qiang Ji},
+journal={Advances in Neural Information Processing Systems},
+  year   = {2026}
 }
 ```
 
