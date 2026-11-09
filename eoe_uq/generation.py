@@ -34,7 +34,7 @@ class HFChatGenerator:
         device_map: str = "auto",
         dtype: torch.dtype = torch.bfloat16,
         max_new_tokens: int = 50,
-        top_k: int = 60,
+        top_k: int = 50,
         top_p: float = 0.99,
         original_prompt: str = ORIGINAL_PROMPT,
         perturbed_prompt: str = PERTURBED_PROMPT,
@@ -44,7 +44,7 @@ class HFChatGenerator:
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
         self.model = AutoModelForCausalLM.from_pretrained(
-            model_name, dtype=dtype, device_map=device_map
+            model_name, torch_dtype=dtype, device_map=device_map
         ).eval()
         self.max_new_tokens = max_new_tokens
         self.top_k = top_k

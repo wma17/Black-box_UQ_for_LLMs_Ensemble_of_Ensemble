@@ -6,8 +6,8 @@ from eoe_uq.uncertainty import decompose_uncertainty
 
 def reference(e):
     n, m, _ = e.shape
-    au = np.mean([np.mean(np.var(e[i], axis=0, ddof=1)) for i in range(n)])
-    eu = np.mean(np.var(e.mean(axis=1), axis=0, ddof=1)) - au / m
+    au = np.mean([np.trace(np.cov(e[i], rowvar=False)) for i in range(n)])
+    eu = np.trace(np.cov(e.mean(axis=1), rowvar=False)) - au / m
     return au, eu
 
 
