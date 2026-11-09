@@ -4,13 +4,13 @@ For a question x with paraphrase pool P(x):
 
     outer ensemble (n = 1..N):
         z_n   = embed(x) + eps_n,          eps_n ~ N(0, sigma^2 I)
-        x'_n  = argmax_{p in P(x) U {x}} cos(z_n, embed(p))      # snap to a real question
+        x'_n  = argmax_{p in P(x)} cos(z_n, embed(p))            # snap to a cached paraphrase
         inner ensemble (m = 1..M):
             y_{n,m} ~ LLM(. | x'_n)                               # sampled answers
             e_{n,m} = embed(y_{n,m})
 
-    AU = mean_n mean_d Var_m[e_{n,m,d}]
-    EU = mean_d Var_n[mean_m e_{n,m,d}] - AU / M
+    AU = tr( mean_n Cov_m[e_{n,m}] )
+    EU = tr( Cov_n[mean_m e_{n,m}] ) - AU / M
     TU = AU + EU
 """
 
@@ -76,10 +76,12 @@ class EnsembleOfEnsembles:
     # Outer ensemble: embedding-space perturbation snapped to a paraphrase
     # ------------------------------------------------------------------ #
     def perturb(self, question: str, paraphrases: List[str]) -> List[str]:
-        """Return N perturbed questions drawn from ``paraphrases`` (plus the original)."""
-        candidates = list(dict.fromkeys(list(paraphrases) + [question]))
-        cand_emb = self.embedder.encode(candidates, convert_to_tensor=True)
-        q_emb = self.embedder.encode(question, convert_to_tensor=True)
+        """Return N perturbed questions, each snapped to the nearest paraphrase in ``paraphrases``."""
+        candidates = list(dict.fromkeys(paraphrases))
+        if not candidates:
+            raise ValueError(f"empty paraphrase pool for question: {question!r}")
+        cand_emb = self.embedder.encode(candidates, convert_to_tensor=True, normalize_embeddings=True)
+        q_emb = self.embedder.encode(question, convert_to_tensor=True, normalize_embeddings=True)
 
         chosen = []
         for _ in range(self.num_outer):
@@ -107,7 +109,7 @@ class EnsembleOfEnsembles:
         )
 
         flat = [a for row in inner_answers for a in row]
-        emb = np.asarray(self.embedder.encode(flat), dtype=np.float32)
+        emb = np.asarray(self.embedder.encode(flat, normalize_embeddings=True), dtype=np.float32)
         emb = emb.reshape(self.num_outer, self.num_inner, -1)
 
         result = {"question": question, "answer": answer, **decompose_uncertainty(emb)}

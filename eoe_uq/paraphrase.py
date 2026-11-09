@@ -62,12 +62,12 @@ class ParaphraseGenerator:
         Stops after ``max_rounds`` sampling rounds even if the pool is not full
         (short questions can have fewer distinct paraphrases than requested).
         """
-        pool: set = set()
+        pool: Dict[str, None] = {}  # insertion-ordered set
         for _ in range(max_rounds):
             needed = num_paraphrases - len(pool)
             if needed <= 0:
                 break
-            pool.update(self._sample(question, min(needed, self.batch_size)))
+            pool.update(dict.fromkeys(self._sample(question, min(needed, self.batch_size))))
         if len(pool) < num_paraphrases:
             logger.warning(
                 "Only %d/%d unique paraphrases after %d rounds for: %r",
